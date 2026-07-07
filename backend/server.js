@@ -35,10 +35,17 @@ app.use((req, res) => {
 
 // --- Global Error Handler ---
 app.use((err, req, res, next) => {
-  console.error(err.stack);
-  res.status(err.statusCode || 500).json({
-    message: err.message || 'Internal Server Error',
-  });
+  // Log unexpected errors; skip noise for known operational errors
+  if (!err.isOperational) {
+    console.error('UNEXPECTED ERROR:', err.stack);
+  }
+
+  const statusCode = err.statusCode || 500;
+  const message    = err.isOperational
+    ? err.message
+    : 'Something went wrong. Please try again later.';
+
+  res.status(statusCode).json({ message });
 });
 
 const PORT = process.env.PORT || 5000;
