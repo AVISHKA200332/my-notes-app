@@ -1,13 +1,19 @@
 import { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, Navigate } from 'react-router-dom';
 import { registerUser } from '../api/authApi';
+import { useAuth } from '../context/AuthContext';
 import styles from './Auth.module.css';
 
 const RegisterPage = () => {
+  const { login, isLoggedIn } = useAuth();
   const [formData, setFormData] = useState({ name: '', email: '', password: '', confirm: '' });
   const [error,    setError]    = useState('');
   const [loading,  setLoading]  = useState(false);
   const [success,  setSuccess]  = useState(null); // holds user object on success
+
+  if (isLoggedIn) {
+    return <Navigate to="/dashboard" replace />;
+  }
 
   const handleChange = (e) =>
     setFormData((prev) => ({ ...prev, [e.target.name]: e.target.value }));
@@ -32,6 +38,7 @@ const RegisterPage = () => {
       });
       localStorage.setItem('token', data.token);
       localStorage.setItem('user',  JSON.stringify({ _id: data._id, name: data.name, email: data.email }));
+      login(data.token);
       setSuccess(data);
     } catch (err) {
       setError(err.response?.data?.message || 'Registration failed. Please try again.');

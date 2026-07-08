@@ -1,70 +1,94 @@
-import React, { useState } from 'react';
-import { createNote } from '../api/notesApi';
+import { useState } from 'react';
 
-const TAGS = ['General', 'Work', 'Personal', 'Study', 'Ideas'];
+const CATEGORIES = ['Personal', 'School', 'Campus', 'Work'];
 
 function CreateNote({ token, onNoteCreated }) {
   const [title, setTitle] = useState('');
   const [content, setContent] = useState('');
-  const [tag, setTag] = useState('General');
-  const [saving, setSaving] = useState(false);
+  const [category, setCategory] = useState('Personal');
   const [error, setError] = useState('');
-  const [savedFlash, setSavedFlash] = useState(false);
+  const [loading, setLoading] = useState(false);
 
-  async function handleSubmit(e) {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     if (!title.trim() || !content.trim()) {
-      setError('Please fill in both the title and the content.');
+      setError('Title and content are required.');
       return;
     }
+
+    setLoading(true);
+    setError('');
+
     try {
-      setSaving(true);
-      setError('');
-      const newNote = await createNote(token, { title, content, tag });
-      onNoteCreated(newNote);
+      const res = await fetch('http://localhost:5000/api/notes', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({ title, content, category }),
+      });
+
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.message || 'Failed to create note');
+
+      onNoteCreated?.(data);
       setTitle('');
       setContent('');
-      setTag('General');
-      setSavedFlash(true);
-      setTimeout(() => setSavedFlash(false), 2000);
+      setCategory('Personal');
     } catch (err) {
       setError(err.message);
     } finally {
-      setSaving(false);
+      setLoading(false);
     }
-  }
+  };
 
   return (
-    <form className="create-note" onSubmit={handleSubmit}>
-      <h2>New note</h2>
+    <section className="create-note">
+      <div className="create-note__header">
+        <div>
+          <p className="create-note__eyebrow">New note</p>
+          <h2 className="create-note__title">Capture your next idea</h2>
+        </div>
+        <span className="create-note__hint">Choose a category and save it instantly.</span>
+      </div>
 
-      <label className="create-note__field">
-        <span>Title</span>
-        <input type="text" value={title} onChange={(e) => setTitle(e.target.value)} placeholder="Note title" />
-      </label>
+      <form onSubmit={handleSubmit} className="create-note__form">
+        <label className="create-note__field">
+          <span>Title</span>
+          <input
+            value={title}
+            onChange={(e) => setTitle(e.target.value)}
+            placeholder="Give it a title"
+          />
+        </label>
 
-      <label className="create-note__field">
-        <span>Content</span>
-        <textarea rows={4} value={content} onChange={(e) => setContent(e.target.value)} placeholder="Write your note here..." />
-        <span className="create-note__charcount">{content.length} characters</span>
-      </label>
+        <label className="create-note__field">
+          <span>Note</span>
+          <textarea
+            value={content}
+            onChange={(e) => setContent(e.target.value)}
+            placeholder="Write down the details"
+            rows={4}
+          />
+        </label>
 
-      <label className="create-note__field">
-        <span>Tag</span>
-        <select value={tag} onChange={(e) => setTag(e.target.value)} className="create-note__select">
-          {TAGS.map((t) => (
-            <option key={t} value={t}>{t}</option>
-          ))}
-        </select>
-      </label>
+        <label className="create-note__field">
+          <span>Category</span>
+          <select value={category} onChange={(e) => setCategory(e.target.value)}>
+            {CATEGORIES.map((cat) => (
+              <option key={cat} value={cat}>{cat}</option>
+            ))}
+          </select>
+        </label>
 
-      {error && <p className="create-note__error">{error}</p>}
-      {savedFlash && <p className="create-note__success">Note saved ✓</p>}
+        {error && <p className="create-note__error">{error}</p>}
 
-      <button type="submit" className="btn" disabled={saving}>
-        {saving ? 'Saving...' : 'Save note'}
-      </button>
-    </form>
+        <button type="submit" className="btn btn--primary" disabled={loading}>
+          {loading ? 'Saving note…' : 'Add Note'}
+        </button>
+      </form>
+    </section>
   );
 }
 

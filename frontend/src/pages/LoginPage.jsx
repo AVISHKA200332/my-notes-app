@@ -1,13 +1,19 @@
 import { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, Navigate } from 'react-router-dom';
 import { loginUser } from '../api/authApi';
+import { useAuth } from '../context/AuthContext';
 import styles from './Auth.module.css';
 
 const LoginPage = () => {
+  const { login, isLoggedIn } = useAuth();
   const [formData, setFormData] = useState({ email: '', password: '' });
   const [error,    setError]    = useState('');
   const [loading,  setLoading]  = useState(false);
   const [success,  setSuccess]  = useState(null); // holds user object on success
+
+  if (isLoggedIn) {
+    return <Navigate to="/dashboard" replace />;
+  }
 
   const handleChange = (e) =>
     setFormData((prev) => ({ ...prev, [e.target.name]: e.target.value }));
@@ -18,9 +24,9 @@ const LoginPage = () => {
     setLoading(true);
     try {
       const { data } = await loginUser(formData);
-      // Persist token for future authenticated requests
       localStorage.setItem('token', data.token);
       localStorage.setItem('user',  JSON.stringify({ _id: data._id, name: data.name, email: data.email }));
+      login(data.token);
       setSuccess(data);
     } catch (err) {
       setError(err.response?.data?.message || 'Login failed. Please try again.');
