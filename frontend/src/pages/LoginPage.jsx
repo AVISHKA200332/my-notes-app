@@ -1,15 +1,13 @@
 import { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { loginUser } from '../api/authApi';
-import { useAuth } from '../context/AuthContext';
 import styles from './Auth.module.css';
 
 const LoginPage = () => {
-  const { login } = useAuth();
-  const navigate = useNavigate();
   const [formData, setFormData] = useState({ email: '', password: '' });
-  const [error, setError] = useState('');
-  const [loading, setLoading] = useState(false);
+  const [error,    setError]    = useState('');
+  const [loading,  setLoading]  = useState(false);
+  const [success,  setSuccess]  = useState(null); // holds user object on success
 
   const handleChange = (e) =>
     setFormData((prev) => ({ ...prev, [e.target.name]: e.target.value }));
@@ -20,8 +18,10 @@ const LoginPage = () => {
     setLoading(true);
     try {
       const { data } = await loginUser(formData);
-      login(data);
-      navigate('/dashboard');
+      // Persist token for future authenticated requests
+      localStorage.setItem('token', data.token);
+      localStorage.setItem('user',  JSON.stringify({ _id: data._id, name: data.name, email: data.email }));
+      setSuccess(data);
     } catch (err) {
       setError(err.response?.data?.message || 'Login failed. Please try again.');
     } finally {
@@ -29,9 +29,38 @@ const LoginPage = () => {
     }
   };
 
+  /* ── Success screen ── */
+  if (success) {
+    return (
+      <div className={styles.page}>
+        <div className={styles.brand}>
+          <div className={styles.brandInner}>
+            <div className={styles.logo}>
+              <span className={styles.logoIcon}>📝</span>
+              <span className={styles.logoText}>MyNotes</span>
+            </div>
+            <h1 className={styles.tagline}>Your thoughts,<br />organised beautifully.</h1>
+          </div>
+        </div>
+        <div className={styles.formPanel}>
+          <div className={styles.card}>
+            <div className={styles.successIcon}>✓</div>
+            <h2 className={styles.cardTitle}>Welcome back, {success.name}!</h2>
+            <p className={styles.cardSub}>You have successfully signed in.</p>
+            <div className={styles.successInfo}>
+              <p><span>Email</span><span>{success.email}</span></p>
+              <p><span>Token saved</span><span>✔ localStorage</span></p>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  /* ── Login form ── */
   return (
     <div className={styles.page}>
-      {/* ── Left panel: branding ── */}
+      {/* Left branding panel */}
       <div className={styles.brand}>
         <div className={styles.brandInner}>
           <div className={styles.logo}>
@@ -53,7 +82,7 @@ const LoginPage = () => {
         </div>
       </div>
 
-      {/* ── Right panel: form ── */}
+      {/* Right form panel */}
       <div className={styles.formPanel}>
         <div className={styles.card}>
           <h2 className={styles.cardTitle}>Welcome back</h2>
@@ -105,11 +134,7 @@ const LoginPage = () => {
               </div>
             </div>
 
-            <button
-              type="submit"
-              className={styles.submitBtn}
-              disabled={loading}
-            >
+            <button type="submit" className={styles.submitBtn} disabled={loading}>
               {loading ? <span className={styles.spinner} /> : 'Sign In'}
             </button>
           </form>

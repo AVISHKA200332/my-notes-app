@@ -1,6 +1,6 @@
 const express = require('express');
-const cors = require('cors');
-const dotenv = require('dotenv');
+const cors    = require('cors');
+const dotenv  = require('dotenv');
 const connectDB = require('./config/db');
 
 // Load environment variables
@@ -11,7 +11,7 @@ connectDB();
 
 const app = express();
 
-// --- Middleware ---
+// ── Middleware ────────────────────────────────────────────────────────────────
 app.use(cors({
   origin: process.env.CLIENT_URL || 'http://localhost:5173',
   credentials: true,
@@ -19,23 +19,21 @@ app.use(cors({
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
-// --- Routes ---
+// ── Routes ────────────────────────────────────────────────────────────────────
 app.use('/api/auth', require('./routes/authRoutes'));
-app.use('/api/notes', require('./routes/noteRoutes'));
 
-// --- Health Check ---
+// ── Health check ──────────────────────────────────────────────────────────────
 app.get('/api/health', (req, res) => {
   res.status(200).json({ status: 'OK', message: 'Server is running' });
 });
 
-// --- 404 Handler ---
+// ── 404 handler ───────────────────────────────────────────────────────────────
 app.use((req, res) => {
   res.status(404).json({ message: 'Route not found' });
 });
 
-// --- Global Error Handler ---
+// ── Global error handler ──────────────────────────────────────────────────────
 app.use((err, req, res, next) => {
-  // Log unexpected errors; skip noise for known operational errors
   if (!err.isOperational) {
     console.error('UNEXPECTED ERROR:', err.stack);
   }

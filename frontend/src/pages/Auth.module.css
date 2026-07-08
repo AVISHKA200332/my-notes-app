@@ -368,3 +368,36 @@
   .card { padding: 1.5rem 1.1rem; }
   .cardTitle { font-size: 1.5rem; }
 }
+
+/* ── Success screen ─────────────────────────────────────────── */
+.successIcon {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #1a3aad, #2563eb);
+  color: #fff;
+  font-size: 1.6rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 1.2rem;
+  box-shadow: 0 4px 20px rgba(37,99,235,0.45);
+}
+
+.successInfo {
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 10px;
+  padding: 1rem 1.2rem;
+  margin-top: 1.2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.55rem;
+}
+.successInfo p {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.87rem;
+}
+.successInfo p span:first-child { color: rgba(255,255,255,0.50); }
+.successInfo p span:last-child  { color: rgba(255,255,255,0.90); font-weight: 600; }

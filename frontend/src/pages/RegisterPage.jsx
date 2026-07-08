@@ -1,15 +1,13 @@
 import { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { registerUser } from '../api/authApi';
-import { useAuth } from '../context/AuthContext';
 import styles from './Auth.module.css';
 
 const RegisterPage = () => {
-  const { login } = useAuth();
-  const navigate = useNavigate();
   const [formData, setFormData] = useState({ name: '', email: '', password: '', confirm: '' });
-  const [error, setError] = useState('');
-  const [loading, setLoading] = useState(false);
+  const [error,    setError]    = useState('');
+  const [loading,  setLoading]  = useState(false);
+  const [success,  setSuccess]  = useState(null); // holds user object on success
 
   const handleChange = (e) =>
     setFormData((prev) => ({ ...prev, [e.target.name]: e.target.value }));
@@ -17,21 +15,24 @@ const RegisterPage = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
+
     if (formData.password !== formData.confirm) {
       return setError('Passwords do not match.');
     }
     if (formData.password.length < 6) {
       return setError('Password must be at least 6 characters.');
     }
+
     setLoading(true);
     try {
       const { data } = await registerUser({
-        name: formData.name,
-        email: formData.email,
+        name:     formData.name,
+        email:    formData.email,
         password: formData.password,
       });
-      login(data);
-      navigate('/dashboard');
+      localStorage.setItem('token', data.token);
+      localStorage.setItem('user',  JSON.stringify({ _id: data._id, name: data.name, email: data.email }));
+      setSuccess(data);
     } catch (err) {
       setError(err.response?.data?.message || 'Registration failed. Please try again.');
     } finally {
@@ -39,25 +40,57 @@ const RegisterPage = () => {
     }
   };
 
-  /* Password strength indicator */
+  /* Password strength */
   const strength = (() => {
     const p = formData.password;
     if (!p) return 0;
-    let score = 0;
-    if (p.length >= 6) score++;
-    if (p.length >= 10) score++;
-    if (/[A-Z]/.test(p)) score++;
-    if (/[0-9]/.test(p)) score++;
-    if (/[^A-Za-z0-9]/.test(p)) score++;
-    return score;
+    let s = 0;
+    if (p.length >= 6)          s++;
+    if (p.length >= 10)         s++;
+    if (/[A-Z]/.test(p))        s++;
+    if (/[0-9]/.test(p))        s++;
+    if (/[^A-Za-z0-9]/.test(p)) s++;
+    return s;
   })();
-
   const strengthLabel = ['', 'Very Weak', 'Weak', 'Fair', 'Strong', 'Very Strong'][strength];
   const strengthColor = ['', '#ef4444', '#f97316', '#eab308', '#22c55e', '#16a34a'][strength];
 
+  /* ── Success screen ── */
+  if (success) {
+    return (
+      <div className={styles.page}>
+        <div className={styles.brand}>
+          <div className={styles.brandInner}>
+            <div className={styles.logo}>
+              <span className={styles.logoIcon}>📝</span>
+              <span className={styles.logoText}>MyNotes</span>
+            </div>
+            <h1 className={styles.tagline}>Welcome aboard,<br />{success.name}! 🎉</h1>
+          </div>
+        </div>
+        <div className={styles.formPanel}>
+          <div className={styles.card}>
+            <div className={styles.successIcon}>✓</div>
+            <h2 className={styles.cardTitle}>Account created!</h2>
+            <p className={styles.cardSub}>Your account is ready to use.</p>
+            <div className={styles.successInfo}>
+              <p><span>Name</span><span>{success.name}</span></p>
+              <p><span>Email</span><span>{success.email}</span></p>
+              <p><span>Token saved</span><span>✔ localStorage</span></p>
+            </div>
+            <Link to="/login" className={styles.submitBtn} style={{ display:'flex', justifyContent:'center', marginTop:'1.5rem', textDecoration:'none' }}>
+              Go to Sign In
+            </Link>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  /* ── Register form ── */
   return (
     <div className={styles.page}>
-      {/* ── Left branding panel ── */}
+      {/* Left branding panel */}
       <div className={styles.brand}>
         <div className={styles.brandInner}>
           <div className={styles.logo}>
@@ -86,7 +119,7 @@ const RegisterPage = () => {
         </div>
       </div>
 
-      {/* ── Right form panel ── */}
+      {/* Right form panel */}
       <div className={styles.formPanel}>
         <div className={styles.card}>
           <h2 className={styles.cardTitle}>Create account</h2>
@@ -177,8 +210,7 @@ const RegisterPage = () => {
                   id="confirm"
                   className={`${styles.input} ${
                     formData.confirm && formData.confirm !== formData.password
-                      ? styles.inputError
-                      : ''
+                      ? styles.inputError : ''
                   }`}
                   type="password"
                   name="confirm"
@@ -194,11 +226,7 @@ const RegisterPage = () => {
               )}
             </div>
 
-            <button
-              type="submit"
-              className={styles.submitBtn}
-              disabled={loading}
-            >
+            <button type="submit" className={styles.submitBtn} disabled={loading}>
               {loading ? <span className={styles.spinner} /> : 'Create Account'}
             </button>
           </form>
