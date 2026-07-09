@@ -15,9 +15,9 @@ const app = express();
 connectDB();
 
 // Allowed Origins
-const allowedOrigins = [
-  "http://localhost:5173",
-  "https://my-notes-app-lyart-eta.vercel.app",
+const allowedOriginPatterns = [
+  /^http:\/\/localhost:\d+$/,             // any localhost port
+  /^https:\/\/[\w-]+\.vercel\.app$/,      // any Vercel preview / production URL
 ];
 
 // Middleware
@@ -27,7 +27,11 @@ app.use(
       // Allow requests with no origin (Postman, mobile apps)
       if (!origin) return callback(null, true);
 
-      if (allowedOrigins.includes(origin)) {
+      const allowed = allowedOriginPatterns.some((pattern) =>
+        pattern.test(origin)
+      );
+
+      if (allowed) {
         return callback(null, true);
       }
 
