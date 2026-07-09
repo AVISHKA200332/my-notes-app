@@ -1,27 +1,38 @@
-import { useEffect, useMemo, useState } from 'react';
-import { useAuth } from '../context/AuthContext';
-import CreateNote from '../components/CreateNote';
-import NoteList from '../components/NoteList';
+import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useAuth }            from '../context/AuthContext';
+import CreateNote             from '../components/CreateNote';
+import NoteList               from '../components/NoteList';
+import EditNoteModal          from '../components/EditNoteModal';
+import DeleteConfirmModal     from '../components/DeleteConfirmModal';
 import '../styles/dashboard.css';
 
-const CATEGORIES = ['All', 'Personal', 'School', 'Campus', 'Work'];
+const CATEGORIES = ['All', 'General', 'Personal', 'School', 'Campus', 'Work'];
 
 function Dashboard() {
   const { token, user, logout } = useAuth();
+
+  // ── Notes state ────────────────────────────────────────────────────────────
   const [notes,          setNotes]          = useState([]);
   const [loading,        setLoading]        = useState(true);
   const [error,          setError]          = useState('');
+
+  // ── Filter/search state ────────────────────────────────────────────────────
   const [activeCategory, setActiveCategory] = useState('All');
   const [search,         setSearch]         = useState('');
 
+  // ── Modal state ────────────────────────────────────────────────────────────
+  const [editingNote,    setEditingNote]    = useState(null); // note object | null
+  const [deletingNote,   setDeletingNote]   = useState(null); // note object | null
+  const [deleteLoading,  setDeleteLoading]  = useState(false);
+  const [deleteError,    setDeleteError]    = useState('');
+
+  // ── Load notes on mount ────────────────────────────────────────────────────
   useEffect(() => {
     if (!token) return;
-
-    const loadNotes = async () => {
+    const load = async () => {
       try {
         setLoading(true);
-        // Use relative path — Vite proxies /api/* → http://localhost:5000
-        const res = await fetch('/api/notes', {
+        const res  = await fetch('/api/notes', {
           headers: { Authorization: `Bearer ${token}` },
         });
         const data = await res.json();
@@ -33,33 +44,71 @@ function Dashboard() {
         setLoading(false);
       }
     };
-
-    loadNotes();
+    load();
   }, [token]);
 
+  // ── Derived values ─────────────────────────────────────────────────────────
   const noteCount = useMemo(() => notes.length, [notes]);
 
   const filteredNotes = useMemo(() => {
     return notes
-      .filter((note) => activeCategory === 'All' || note.category === activeCategory)
-      .filter((note) => {
-        const query = search.toLowerCase().trim();
-        if (!query) return true;
+      .filter((n) => activeCategory === 'All' || n.tag === activeCategory)
+      .filter((n) => {
+        const q = search.toLowerCase().trim();
+        if (!q) return true;
         return (
-          note.title.toLowerCase().includes(query) ||
-          note.content.toLowerCase().includes(query) ||
-          (note.category || 'Personal').toLowerCase().includes(query)
+          n.title.toLowerCase().includes(q) ||
+          n.content.toLowerCase().includes(q) ||
+          (n.tag || 'General').toLowerCase().includes(q)
         );
       });
   }, [notes, activeCategory, search]);
 
-  const categoriesSummary = useMemo(() => {
-    const summary = { Personal: 0, School: 0, Campus: 0, Work: 0 };
-    notes.forEach((note) => {
-      if (summary[note.category] !== undefined) summary[note.category] += 1;
+  const tagSummary = useMemo(() => {
+    const counts = { General: 0, Personal: 0, School: 0, Campus: 0, Work: 0 };
+    notes.forEach((n) => {
+      if (counts[n.tag] !== undefined) counts[n.tag]++;
     });
-    return summary;
+    return counts;
   }, [notes]);
+
+  // ── Handlers ───────────────────────────────────────────────────────────────
+
+  // Called by CreateNote when a new note is saved
+  const handleNoteCreated = useCallback(
+    (newNote) => setNotes((prev) => [newNote, ...prev]),
+    []
+  );
+
+  // Called by EditNoteModal after a successful PUT
+  const handleNoteSaved = useCallback((updatedNote) => {
+    setNotes((prev) =>
+      prev.map((n) => (n._id === updatedNote._id ? updatedNote : n))
+    );
+  }, []);
+
+  // Called when user clicks Delete and confirms
+  const handleDeleteConfirm = async () => {
+    if (!deletingNote) return;
+    setDeleteLoading(true);
+    setDeleteError('');
+    try {
+      const res = await fetch(`/api/notes/${deletingNote._id}`, {
+        method:  'DELETE',
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.message || 'Failed to delete note');
+
+      // Remove from local state immediately — no re-fetch needed
+      setNotes((prev) => prev.filter((n) => n._id !== deletingNote._id));
+      setDeletingNote(null);
+    } catch (err) {
+      setDeleteError(err.message);
+    } finally {
+      setDeleteLoading(false);
+    }
+  };
 
   return (
     <div className="dashboard">
@@ -70,7 +119,9 @@ function Dashboard() {
           <h1 className="dashboard__title">
             Welcome back, {user?.name?.split(' ')[0] ?? 'there'} 👋
           </h1>
-          <p className="dashboard__subtitle">Capture ideas, tasks and moments in one place.</p>
+          <p className="dashboard__subtitle">
+            Capture ideas, tasks and moments in one place.
+          </p>
         </div>
         <button className="dashboard__logout" onClick={logout}>Logout</button>
       </div>
@@ -82,7 +133,7 @@ function Dashboard() {
           <strong className="dashboard__stat-value">{noteCount}</strong>
         </article>
         <article className="dashboard__stat-card">
-          <span className="dashboard__stat-label">Active category</span>
+          <span className="dashboard__stat-label">Active filter</span>
           <strong className="dashboard__stat-value">{activeCategory}</strong>
         </article>
         <article className="dashboard__stat-card">
@@ -92,29 +143,26 @@ function Dashboard() {
       </div>
 
       {/* ── Create note ── */}
-      <CreateNote
-        token={token}
-        onNoteCreated={(newNote) => setNotes((prev) => [newNote, ...prev])}
-      />
+      <CreateNote token={token} onNoteCreated={handleNoteCreated} />
 
       {/* ── Filters + search ── */}
       <div className="dashboard__toolbar">
         <div className="dashboard__filters">
-          {CATEGORIES.map((category) => (
+          {CATEGORIES.map((cat) => (
             <button
-              key={category}
+              key={cat}
               className={`dashboard__filter-btn ${
-                activeCategory === category ? 'dashboard__filter-btn--active' : ''
+                activeCategory === cat ? 'dashboard__filter-btn--active' : ''
               }`}
-              onClick={() => setActiveCategory(category)}
+              onClick={() => setActiveCategory(cat)}
             >
-              {category}
+              {cat}
             </button>
           ))}
         </div>
         <input
           type="search"
-          placeholder="Search notes..."
+          placeholder="Search notes…"
           value={search}
           onChange={(e) => setSearch(e.target.value)}
           className="dashboard__search"
@@ -122,20 +170,57 @@ function Dashboard() {
         />
       </div>
 
-      {/* ── Note list ── */}
-      {loading && <p className="dashboard__status">Loading notes…</p>}
-      {error   && <p className="dashboard__status dashboard__status--error">{error}</p>}
-      {!loading && !error && <NoteList notes={filteredNotes} />}
+      {/* ── Delete error (shown inline below toolbar) ── */}
+      {deleteError && (
+        <p className="dashboard__status dashboard__status--error">{deleteError}</p>
+      )}
 
-      {/* ── Category summary ── */}
+      {/* ── Note list ── */}
+      {loading  && <p className="dashboard__status">Loading notes…</p>}
+      {error    && <p className="dashboard__status dashboard__status--error">{error}</p>}
+      {!loading && !error && (
+        <NoteList
+          notes={filteredNotes}
+          onEdit={(note)   => setEditingNote(note)}
+          onDelete={(note) => { setDeleteError(''); setDeletingNote(note); }}
+        />
+      )}
+
+      {/* ── Tag summary ── */}
       <div className="dashboard__category-summary">
-        {Object.entries(categoriesSummary).map(([category, count]) => (
-          <div key={category} className="dashboard__category-pill">
-            <span>{category}</span>
+        {Object.entries(tagSummary).map(([tag, count]) => (
+          <div key={tag} className="dashboard__category-pill">
+            <span>{tag}</span>
             <strong>{count}</strong>
           </div>
         ))}
       </div>
+
+      {/* ── Edit modal ── */}
+      {editingNote && (
+        <EditNoteModal
+          note={editingNote}
+          token={token}
+          onSave={handleNoteSaved}
+          onClose={() => setEditingNote(null)}
+        />
+      )}
+
+      {/* ── Delete confirm modal ── */}
+      {deletingNote && (
+        <DeleteConfirmModal
+          noteTitle={deletingNote.title}
+          onConfirm={handleDeleteConfirm}
+          onCancel={() => setDeletingNote(null)}
+        />
+      )}
+
+      {/* Delete in-progress overlay hint */}
+      {deleteLoading && (
+        <p className="dashboard__status" style={{ textAlign: 'center', marginTop: '1rem' }}>
+          Deleting…
+        </p>
+      )}
     </div>
   );
 }

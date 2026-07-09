@@ -1,38 +1,14 @@
 const express = require('express');
-const router = express.Router();
-const Note = require('../models/Note');
-const authMiddleware = require('../middleware/authMiddleware');
+const router  = express.Router();
+const authMiddleware                              = require('../middleware/authMiddleware');
+const { getNotes, createNote, updateNote, deleteNote } = require('../controllers/noteController');
 
-router.post('/', authMiddleware, async (req, res) => {
-  try {
-    const { title, content, tag } = req.body;
+// All note routes require a valid JWT
+router.use(authMiddleware);
 
-    if (!title || !content) {
-      return res.status(400).json({ message: 'Title and content are required' });
-    }
-
-    const note = await Note.create({
-      user: req.user.id,
-      title,
-      content,
-      tag: tag || 'General'
-    });
-
-    return res.status(201).json(note);
-  } catch (err) {
-    console.error(err);
-    return res.status(500).json({ message: 'Server error while creating note' });
-  }
-});
-
-router.get('/', authMiddleware, async (req, res) => {
-  try {
-    const notes = await Note.find({ user: req.user.id }).sort({ date: -1 });
-    return res.status(200).json(notes);
-  } catch (err) {
-    console.error(err);
-    return res.status(500).json({ message: 'Server error while fetching notes' });
-  }
-});
+router.get('/',     getNotes);    // GET    /api/notes
+router.post('/',    createNote);  // POST   /api/notes
+router.put('/:id',  updateNote);  // PUT    /api/notes/:id
+router.delete('/:id', deleteNote);// DELETE /api/notes/:id
 
 module.exports = router;
