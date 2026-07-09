@@ -156,7 +156,7 @@ const RegisterPage = () => {
                 />
               </div>
               {formData.password && (
-                <div className={styles.strengthWrap}>
+                <div className={styles.strengthWrap} data-testid="strength-indicator">
                   <div className={styles.strengthBar}>
                     {[1,2,3,4,5].map((i) => (
                       <div

@@ -27,7 +27,7 @@ function CreateNote({ token, onNoteCreated }) {
           'Content-Type': 'application/json',
           Authorization: `Bearer ${token}`,
         },
-        body: JSON.stringify({ title, content, category }),
+        body: JSON.stringify({ title, content, tag: category }),
       });
 
       const data = await res.json();
