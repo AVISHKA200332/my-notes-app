@@ -1,16 +1,8 @@
 import { useEffect, useRef, useState } from 'react';
+import { safeFetch } from '../api/safeFetch';
 
 const TAGS = ['General', 'Personal', 'School', 'Campus', 'Work'];
 
-/**
- * Slide-in modal for editing an existing note.
- *
- * Props:
- *   note    {object}   – the note being edited
- *   token   {string}   – JWT for the API call
- *   onSave  {function} – called with the updated note object after success
- *   onClose {function} – called when the modal should be dismissed
- */
 function EditNoteModal({ note, token, onSave, onClose }) {
   const [title,   setTitle]   = useState(note.title);
   const [content, setContent] = useState(note.content);
@@ -18,8 +10,8 @@ function EditNoteModal({ note, token, onSave, onClose }) {
   const [error,   setError]   = useState('');
   const [loading, setLoading] = useState(false);
 
-  // Close on Escape key
   const overlayRef = useRef(null);
+
   useEffect(() => {
     const onKey = (e) => { if (e.key === 'Escape') onClose(); };
     window.addEventListener('keydown', onKey);
@@ -37,7 +29,7 @@ function EditNoteModal({ note, token, onSave, onClose }) {
     setError('');
 
     try {
-      const res = await fetch(`/api/notes/${note._id}`, {
+      const data = await safeFetch(`/api/notes/${note._id}`, {
         method:  'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -46,10 +38,7 @@ function EditNoteModal({ note, token, onSave, onClose }) {
         body: JSON.stringify({ title: title.trim(), content: content.trim(), tag }),
       });
 
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.message || 'Failed to update note');
-
-      onSave(data);   // bubble updated note up to Dashboard
+      onSave(data);
       onClose();
     } catch (err) {
       setError(err.message);
@@ -58,7 +47,6 @@ function EditNoteModal({ note, token, onSave, onClose }) {
     }
   };
 
-  // Click outside to close
   const handleOverlayClick = (e) => {
     if (e.target === overlayRef.current) onClose();
   };
@@ -73,22 +61,16 @@ function EditNoteModal({ note, token, onSave, onClose }) {
       aria-labelledby="edit-modal-title"
     >
       <div className="modal">
-        {/* Header */}
         <div className="modal__header">
           <div>
             <p className="modal__eyebrow">Editing note</p>
             <h2 className="modal__title" id="edit-modal-title">Update your note</h2>
           </div>
-          <button
-            className="modal__close"
-            onClick={onClose}
-            aria-label="Close modal"
-          >
+          <button className="modal__close" onClick={onClose} aria-label="Close modal">
             ✕
           </button>
         </div>
 
-        {/* Form */}
         <form onSubmit={handleSubmit} className="modal__form">
           <label className="modal__field">
             <span>Title</span>
@@ -122,19 +104,10 @@ function EditNoteModal({ note, token, onSave, onClose }) {
           {error && <p className="modal__error">{error}</p>}
 
           <div className="modal__actions">
-            <button
-              type="button"
-              className="btn btn--ghost"
-              onClick={onClose}
-              disabled={loading}
-            >
+            <button type="button" className="btn btn--ghost" onClick={onClose} disabled={loading}>
               Cancel
             </button>
-            <button
-              type="submit"
-              className="btn btn--primary"
-              disabled={loading}
-            >
+            <button type="submit" className="btn btn--primary" disabled={loading}>
               {loading ? 'Saving…' : 'Save changes'}
             </button>
           </div>

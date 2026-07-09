@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useAuth }            from '../context/AuthContext';
+import { safeFetch }          from '../api/safeFetch';
 import CreateNote             from '../components/CreateNote';
 import NoteList               from '../components/NoteList';
 import EditNoteModal          from '../components/EditNoteModal';
@@ -11,33 +12,26 @@ const CATEGORIES = ['All', 'General', 'Personal', 'School', 'Campus', 'Work'];
 function Dashboard() {
   const { token, user, logout } = useAuth();
 
-  // ── Notes state ────────────────────────────────────────────────────────────
   const [notes,          setNotes]          = useState([]);
   const [loading,        setLoading]        = useState(true);
   const [error,          setError]          = useState('');
-
-  // ── Filter/search state ────────────────────────────────────────────────────
   const [activeCategory, setActiveCategory] = useState('All');
   const [search,         setSearch]         = useState('');
-
-  // ── Modal state ────────────────────────────────────────────────────────────
-  const [editingNote,    setEditingNote]    = useState(null); // note object | null
-  const [deletingNote,   setDeletingNote]   = useState(null); // note object | null
+  const [editingNote,    setEditingNote]    = useState(null);
+  const [deletingNote,   setDeletingNote]   = useState(null);
   const [deleteLoading,  setDeleteLoading]  = useState(false);
   const [deleteError,    setDeleteError]    = useState('');
 
-  // ── Load notes on mount ────────────────────────────────────────────────────
+  // ── Load notes ─────────────────────────────────────────────────────────────
   useEffect(() => {
     if (!token) return;
     const load = async () => {
       try {
         setLoading(true);
-        const res  = await fetch('/api/notes', {
+        const data = await safeFetch('/api/notes', {
           headers: { Authorization: `Bearer ${token}` },
         });
-        const data = await res.json();
-        if (!res.ok) throw new Error(data.message || 'Failed to load notes');
-        setNotes(data);
+        setNotes(data ?? []);
       } catch (err) {
         setError(err.message);
       } finally {
@@ -66,41 +60,31 @@ function Dashboard() {
 
   const tagSummary = useMemo(() => {
     const counts = { General: 0, Personal: 0, School: 0, Campus: 0, Work: 0 };
-    notes.forEach((n) => {
-      if (counts[n.tag] !== undefined) counts[n.tag]++;
-    });
+    notes.forEach((n) => { if (counts[n.tag] !== undefined) counts[n.tag]++; });
     return counts;
   }, [notes]);
 
   // ── Handlers ───────────────────────────────────────────────────────────────
-
-  // Called by CreateNote when a new note is saved
   const handleNoteCreated = useCallback(
     (newNote) => setNotes((prev) => [newNote, ...prev]),
     []
   );
 
-  // Called by EditNoteModal after a successful PUT
   const handleNoteSaved = useCallback((updatedNote) => {
     setNotes((prev) =>
       prev.map((n) => (n._id === updatedNote._id ? updatedNote : n))
     );
   }, []);
 
-  // Called when user clicks Delete and confirms
   const handleDeleteConfirm = async () => {
     if (!deletingNote) return;
     setDeleteLoading(true);
     setDeleteError('');
     try {
-      const res = await fetch(`/api/notes/${deletingNote._id}`, {
+      await safeFetch(`/api/notes/${deletingNote._id}`, {
         method:  'DELETE',
         headers: { Authorization: `Bearer ${token}` },
       });
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.message || 'Failed to delete note');
-
-      // Remove from local state immediately — no re-fetch needed
       setNotes((prev) => prev.filter((n) => n._id !== deletingNote._id));
       setDeletingNote(null);
     } catch (err) {
@@ -170,12 +154,10 @@ function Dashboard() {
         />
       </div>
 
-      {/* ── Delete error (shown inline below toolbar) ── */}
       {deleteError && (
         <p className="dashboard__status dashboard__status--error">{deleteError}</p>
       )}
 
-      {/* ── Note list ── */}
       {loading  && <p className="dashboard__status">Loading notes…</p>}
       {error    && <p className="dashboard__status dashboard__status--error">{error}</p>}
       {!loading && !error && (
@@ -196,7 +178,6 @@ function Dashboard() {
         ))}
       </div>
 
-      {/* ── Edit modal ── */}
       {editingNote && (
         <EditNoteModal
           note={editingNote}
@@ -206,7 +187,6 @@ function Dashboard() {
         />
       )}
 
-      {/* ── Delete confirm modal ── */}
       {deletingNote && (
         <DeleteConfirmModal
           noteTitle={deletingNote.title}
@@ -215,7 +195,6 @@ function Dashboard() {
         />
       )}
 
-      {/* Delete in-progress overlay hint */}
       {deleteLoading && (
         <p className="dashboard__status" style={{ textAlign: 'center', marginTop: '1rem' }}>
           Deleting…

@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { safeFetch } from '../api/safeFetch';
 
 const CATEGORIES = ['Personal', 'School', 'Campus', 'Work'];
 
@@ -20,8 +21,7 @@ function CreateNote({ token, onNoteCreated }) {
     setError('');
 
     try {
-      // Use relative path — Vite proxies /api/* → http://localhost:5000
-      const res = await fetch('/api/notes', {
+      const data = await safeFetch('/api/notes', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -29,9 +29,6 @@ function CreateNote({ token, onNoteCreated }) {
         },
         body: JSON.stringify({ title, content, tag: category }),
       });
-
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.message || 'Failed to create note');
 
       onNoteCreated?.(data);
       setTitle('');
