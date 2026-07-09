@@ -8,7 +8,7 @@ export default defineConfig({
     // Proxy API requests to the backend during development
     proxy: {
       '/api': {
-        target: 'http://localhost:5000',
+        target: 'https://my-notes-app-jqju.onrender.com',
         changeOrigin: true,
       },
     },
