@@ -1,69 +1,116 @@
-require('dotenv').config();
-const express = require('express');
-const cors = require('cors');
-const jwt = require('jsonwebtoken');
+require("dotenv").config();
 
-const connectDB = require('./config/db');
-const noteRoutes = require('./routes/noteRoutes');
-const authRoutes = require('./routes/authRoutes');
-const User = require('./models/User');
+const express = require("express");
+const cors = require("cors");
+const jwt = require("jsonwebtoken");
+
+const connectDB = require("./config/db");
+const noteRoutes = require("./routes/noteRoutes");
+const authRoutes = require("./routes/authRoutes");
+const User = require("./models/User");
 
 const app = express();
 
-app.use(cors({
-  origin: process.env.CLIENT_URL || 'http://localhost:5173',
-  credentials: true,
-}));
+// Connect Database
+connectDB();
+
+// Allowed Origins
+const allowedOrigins = [
+  "http://localhost:5173",
+  "https://my-notes-c62s31dgw-avishka-s-projects1.vercel.app",
+];
+
+// Middleware
+app.use(
+  cors({
+    origin: function (origin, callback) {
+      // Allow requests with no origin (Postman, mobile apps)
+      if (!origin) return callback(null, true);
+
+      if (allowedOrigins.includes(origin)) {
+        return callback(null, true);
+      }
+
+      return callback(new Error("Not allowed by CORS"));
+    },
+    credentials: true,
+  })
+);
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
-connectDB();
+// Routes
+app.use("/api/auth", authRoutes);
+app.use("/api/notes", noteRoutes);
 
-app.use('/api/auth', authRoutes);
-app.use('/api/notes', noteRoutes);
-
-app.get('/api/health', (req, res) => {
-  res.status(200).json({ status: 'OK', message: 'Server is running' });
+// Health Check
+app.get("/api/health", (req, res) => {
+  res.status(200).json({
+    status: "OK",
+    message: "Server is running",
+  });
 });
 
-app.post('/api/dev/token', async (req, res) => {
+// Development Token Route
+app.post("/api/dev/token", async (req, res) => {
   try {
-    let user = await User.findOne({ email: 'testuser@example.com' });
+    let user = await User.findOne({
+      email: "testuser@example.com",
+    });
+
     if (!user) {
       user = await User.create({
-        name: 'Test User',
-        username: 'testuser',
-        email: 'testuser@example.com',
-        password: 'not-hashed-this-is-just-for-testing',
+        name: "Test User",
+        username: "testuser",
+        email: "testuser@example.com",
+        password: "not-hashed-this-is-just-for-testing",
       });
     }
 
-    const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, { expiresIn: '7d' });
-    res.json({ token, userId: user._id });
+    const token = jwt.sign(
+      { id: user._id },
+      process.env.JWT_SECRET,
+      {
+        expiresIn: "7d",
+      }
+    );
+
+    res.json({
+      token,
+      userId: user._id,
+    });
   } catch (err) {
     console.error(err);
-    res.status(500).json({ message: 'Could not generate dev token' });
+    res.status(500).json({
+      message: "Could not generate dev token",
+    });
   }
 });
 
+// 404 Handler
 app.use((req, res) => {
-  res.status(404).json({ message: 'Route not found' });
+  res.status(404).json({
+    message: "Route not found",
+  });
 });
 
+// Global Error Handler
 app.use((err, req, res, next) => {
-  if (!err.isOperational) {
-    console.error('UNEXPECTED ERROR:', err.stack);
-  }
+  console.error(err.stack);
 
-  const statusCode = err.statusCode || 500;
-  const message = err.isOperational
-    ? err.message
-    : 'Something went wrong. Please try again later.';
-
-  res.status(statusCode).json({ message });
+  res.status(err.statusCode || 500).json({
+    message: err.message || "Something went wrong.",
+  });
 });
 
+// Start Server
 const PORT = process.env.PORT || 5000;
+
 app.listen(PORT, () => {
-  console.log(`Server running in ${process.env.NODE_ENV || 'development'} mode on port ${PORT}`);
+  console.log(
+    `Server running in ${
+      process.env.NODE_ENV || "development"
+    } mode on port ${PORT}`
+  );
 });
