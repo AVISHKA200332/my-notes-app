@@ -17,7 +17,7 @@ connectDB();
 // Allowed Origins
 const allowedOrigins = [
   "http://localhost:5173",
-  "https://my-notes-c62s31dgw-avishka-s-projects1.vercel.app",
+  "https://my-notes-app-lyart-eta.vercel.app",
 ];
 
 // Middleware
