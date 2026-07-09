@@ -1,20 +1,17 @@
 import axios from 'axios';
 
 const axiosInstance = axios.create({
-  baseURL: '/api', // Proxied to http://localhost:5000/api by Vite
+  baseURL: '/api', // Vite proxy → http://localhost:5000/api
   headers: {
     'Content-Type': 'application/json',
   },
 });
 
-// Attach JWT token to every request if available
+// Attach JWT token from localStorage to every request
 axiosInstance.interceptors.request.use((config) => {
-  const stored = localStorage.getItem('user');
-  if (stored) {
-    const { token } = JSON.parse(stored);
-    if (token) {
-      config.headers.Authorization = `Bearer ${token}`;
-    }
+  const token = localStorage.getItem('token');
+  if (token) {
+    config.headers.Authorization = `Bearer ${token}`;
   }
   return config;
 });

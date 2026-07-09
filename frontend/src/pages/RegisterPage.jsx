@@ -1,19 +1,18 @@
 import { useState } from 'react';
-import { Link, Navigate } from 'react-router-dom';
+import { Link, Navigate, useNavigate } from 'react-router-dom';
 import { registerUser } from '../api/authApi';
 import { useAuth } from '../context/AuthContext';
 import styles from './Auth.module.css';
 
 const RegisterPage = () => {
   const { login, isLoggedIn } = useAuth();
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({ name: '', email: '', password: '', confirm: '' });
   const [error,    setError]    = useState('');
   const [loading,  setLoading]  = useState(false);
-  const [success,  setSuccess]  = useState(null); // holds user object on success
 
-  if (isLoggedIn) {
-    return <Navigate to="/dashboard" replace />;
-  }
+  // Already logged in → go straight to dashboard
+  if (isLoggedIn) return <Navigate to="/dashboard" replace />;
 
   const handleChange = (e) =>
     setFormData((prev) => ({ ...prev, [e.target.name]: e.target.value }));
@@ -36,10 +35,8 @@ const RegisterPage = () => {
         email:    formData.email,
         password: formData.password,
       });
-      localStorage.setItem('token', data.token);
-      localStorage.setItem('user',  JSON.stringify({ _id: data._id, name: data.name, email: data.email }));
-      login(data.token);
-      setSuccess(data);
+      login(data);               // stores full user + token in context & localStorage
+      navigate('/dashboard', { replace: true });
     } catch (err) {
       setError(err.response?.data?.message || 'Registration failed. Please try again.');
     } finally {
@@ -62,42 +59,9 @@ const RegisterPage = () => {
   const strengthLabel = ['', 'Very Weak', 'Weak', 'Fair', 'Strong', 'Very Strong'][strength];
   const strengthColor = ['', '#ef4444', '#f97316', '#eab308', '#22c55e', '#16a34a'][strength];
 
-  /* ── Success screen ── */
-  if (success) {
-    return (
-      <div className={styles.page}>
-        <div className={styles.brand}>
-          <div className={styles.brandInner}>
-            <div className={styles.logo}>
-              <span className={styles.logoIcon}>📝</span>
-              <span className={styles.logoText}>MyNotes</span>
-            </div>
-            <h1 className={styles.tagline}>Welcome aboard,<br />{success.name}! 🎉</h1>
-          </div>
-        </div>
-        <div className={styles.formPanel}>
-          <div className={styles.card}>
-            <div className={styles.successIcon}>✓</div>
-            <h2 className={styles.cardTitle}>Account created!</h2>
-            <p className={styles.cardSub}>Your account is ready to use.</p>
-            <div className={styles.successInfo}>
-              <p><span>Name</span><span>{success.name}</span></p>
-              <p><span>Email</span><span>{success.email}</span></p>
-              <p><span>Token saved</span><span>✔ localStorage</span></p>
-            </div>
-            <Link to="/login" className={styles.submitBtn} style={{ display:'flex', justifyContent:'center', marginTop:'1.5rem', textDecoration:'none' }}>
-              Go to Sign In
-            </Link>
-          </div>
-        </div>
-      </div>
-    );
-  }
-
-  /* ── Register form ── */
   return (
     <div className={styles.page}>
-      {/* Left branding panel */}
+      {/* ── Left branding panel ── */}
       <div className={styles.brand}>
         <div className={styles.brandInner}>
           <div className={styles.logo}>
@@ -126,7 +90,7 @@ const RegisterPage = () => {
         </div>
       </div>
 
-      {/* Right form panel */}
+      {/* ── Right form panel ── */}
       <div className={styles.formPanel}>
         <div className={styles.card}>
           <h2 className={styles.cardTitle}>Create account</h2>

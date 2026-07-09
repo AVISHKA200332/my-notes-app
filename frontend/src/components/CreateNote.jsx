@@ -3,11 +3,11 @@ import { useState } from 'react';
 const CATEGORIES = ['Personal', 'School', 'Campus', 'Work'];
 
 function CreateNote({ token, onNoteCreated }) {
-  const [title, setTitle] = useState('');
-  const [content, setContent] = useState('');
+  const [title,    setTitle]    = useState('');
+  const [content,  setContent]  = useState('');
   const [category, setCategory] = useState('Personal');
-  const [error, setError] = useState('');
-  const [loading, setLoading] = useState(false);
+  const [error,    setError]    = useState('');
+  const [loading,  setLoading]  = useState(false);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -20,7 +20,8 @@ function CreateNote({ token, onNoteCreated }) {
     setError('');
 
     try {
-      const res = await fetch('http://localhost:5000/api/notes', {
+      // Use relative path — Vite proxies /api/* → http://localhost:5000
+      const res = await fetch('/api/notes', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

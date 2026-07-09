@@ -3,25 +3,38 @@ import React, { createContext, useContext, useMemo, useState } from 'react';
 const AuthContext = createContext(null);
 
 export function AuthProvider({ children }) {
-  const [token, setToken] = useState(() => localStorage.getItem('token') || null);
+  const [user, setUser] = useState(() => {
+    try {
+      const stored = localStorage.getItem('user');
+      return stored ? JSON.parse(stored) : null;
+    } catch {
+      return null;
+    }
+  });
 
-  const login = (newToken) => {
-    localStorage.setItem('token', newToken);
-    setToken(newToken);
+  /**
+   * Call after a successful login or register.
+   * @param {object} userData  - full response object: { _id, name, email, token, ... }
+   */
+  const login = (userData) => {
+    localStorage.setItem('token', userData.token);
+    localStorage.setItem('user', JSON.stringify(userData));
+    setUser(userData);
   };
 
   const logout = () => {
     localStorage.removeItem('token');
     localStorage.removeItem('user');
-    setToken(null);
+    setUser(null);
   };
 
   const value = useMemo(() => ({
-    token,
+    user,
+    token: user?.token || null,
+    isLoggedIn: Boolean(user?.token),
     login,
     logout,
-    isLoggedIn: Boolean(token),
-  }), [token]);
+  }), [user]);
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }
