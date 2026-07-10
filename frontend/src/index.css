@@ -6,24 +6,34 @@
 }
 
 :root {
-  /* Brand palette — pulled from the dashboard photo */
-  --navy-dark:    #0a0f2c;   /* deep background */
-  --navy-mid:     #0d1b4b;   /* card / panel background */
-  --navy-light:   #132266;   /* subtle border / hover */
-  --royal-blue:   #1a3aad;   /* primary button */
-  --royal-hover:  #1e44cc;   /* button hover */
-  --accent-blue:  #2563eb;   /* link / highlight */
-  --sky:          #3b82f6;   /* secondary accent */
-  --white:        #ffffff;
-  --white-90:     rgba(255,255,255,0.90);
-  --white-60:     rgba(255,255,255,0.60);
-  --white-20:     rgba(255,255,255,0.12);
-  --danger:       #ef4444;
+  --purple:       #7c3aed;
+  --purple-light: #ede9fe;
+  --purple-dark:  #5b21b6;
+  --blue:         #3b82f6;
+  --blue-light:   #dbeafe;
+  --green:        #10b981;
+  --green-light:  #d1fae5;
+  --yellow:       #f59e0b;
+  --yellow-light: #fef3c7;
+  --red:          #ef4444;
+  --red-light:    #fee2e2;
+  --pink:         #ec4899;
+  --pink-light:   #fce7f3;
 
-  --radius-sm:  6px;
-  --radius-md:  12px;
-  --radius-lg:  20px;
-  --transition: 0.22s ease;
+  --bg:           #f5f3ff;
+  --surface:      #ffffff;
+  --border:       #e5e7eb;
+  --text:         #1e1b4b;
+  --text-muted:   #6b7280;
+
+  --radius-sm:  8px;
+  --radius-md:  16px;
+  --radius-lg:  24px;
+  --radius-xl:  32px;
+
+  --shadow-sm: 0 2px 8px rgba(124,58,237,0.08);
+  --shadow-md: 0 4px 20px rgba(124,58,237,0.12);
+  --shadow-lg: 0 8px 40px rgba(124,58,237,0.16);
 }
 
 html, body, #root {
@@ -31,13 +41,17 @@ html, body, #root {
 }
 
 body {
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen,
-    Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
-  background: var(--navy-dark);
-  color: var(--white);
+  font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto,
+    'Helvetica Neue', sans-serif;
+  background: var(--bg);
+  color: var(--text);
   line-height: 1.6;
   -webkit-font-smoothing: antialiased;
+  font-size: 16px;
 }
 
-a { color: var(--sky); text-decoration: none; }
+a { color: var(--purple); text-decoration: none; }
 a:hover { text-decoration: underline; }
+
+button { font-family: inherit; }
+input, textarea, select { font-family: inherit; }
