@@ -11,7 +11,6 @@ const RegisterPage = () => {
   const [error,    setError]    = useState('');
   const [loading,  setLoading]  = useState(false);
 
-  // Already logged in → go straight to dashboard
   if (isLoggedIn) return <Navigate to="/dashboard" replace />;
 
   const handleChange = (e) =>
@@ -35,7 +34,7 @@ const RegisterPage = () => {
         email:    formData.email,
         password: formData.password,
       });
-      login(data);               // stores full user + token in context & localStorage
+      login(data);
       navigate('/dashboard', { replace: true });
     } catch (err) {
       setError(err.response?.data?.message || 'Registration failed. Please try again.');
@@ -61,152 +60,118 @@ const RegisterPage = () => {
 
   return (
     <div className={styles.page}>
-      {/* ── Left branding panel ── */}
-      <div className={styles.brand}>
-        <div className={styles.brandInner}>
-          <div className={styles.logo}>
-            <span className={styles.logoIcon}>📝</span>
-            <span className={styles.logoText}>MyNotes</span>
-          </div>
-          <h1 className={styles.tagline}>
-            Start your journey<br />today — it's free.
-          </h1>
-          <p className={styles.sub}>
-            Join thousands of users who trust MyNotes to keep their ideas safe,
-            searchable, and always at hand.
-          </p>
-          <div className={styles.steps}>
-            {[
-              { n: '1', t: 'Create your free account' },
-              { n: '2', t: 'Write your first note' },
-              { n: '3', t: 'Access from anywhere' },
-            ].map(({ n, t }) => (
-              <div key={n} className={styles.step}>
-                <span className={styles.stepNum}>{n}</span>
-                <span>{t}</span>
-              </div>
-            ))}
-          </div>
+      <div className={styles.card}>
+        {/* Logo */}
+        <div className={styles.logoWrap}>
+          <span className={styles.logoEmoji}>📓</span>
+          <span className={styles.logoText}>MyNotes</span>
         </div>
-      </div>
 
-      {/* ── Right form panel ── */}
-      <div className={styles.formPanel}>
-        <div className={styles.card}>
-          <h2 className={styles.cardTitle}>Create account</h2>
-          <p className={styles.cardSub}>Get started — no credit card required</p>
+        <h2 className={styles.cardTitle}>Create your account 🎉</h2>
+        <p className={styles.cardSub}>It's free and takes less than a minute!</p>
 
-          {error && (
-            <div className={styles.errorBanner} role="alert">
-              <span className={styles.errorIcon}>⚠</span> {error}
-            </div>
-          )}
+        {error && (
+          <div className={styles.errorBanner} role="alert">
+            <span className={styles.errorIcon}>⚠️</span> {error}
+          </div>
+        )}
 
-          <form onSubmit={handleSubmit} noValidate className={styles.form}>
-            <div className={styles.field}>
-              <label htmlFor="name" className={styles.label}>Full name</label>
-              <div className={styles.inputWrap}>
-                <span className={styles.inputIcon}>👤</span>
-                <input
-                  id="name"
-                  className={styles.input}
-                  type="text"
-                  name="name"
-                  placeholder="Jane Doe"
-                  value={formData.name}
-                  onChange={handleChange}
-                  autoComplete="name"
-                  required
-                />
-              </div>
-            </div>
+        <form onSubmit={handleSubmit} noValidate className={styles.form}>
+          <div className={styles.field}>
+            <label htmlFor="name" className={styles.label}>👤 Your name</label>
+            <input
+              id="name"
+              className={styles.input}
+              style={{ paddingLeft: '1rem' }}
+              type="text"
+              name="name"
+              placeholder="e.g. Alex Smith"
+              value={formData.name}
+              onChange={handleChange}
+              autoComplete="name"
+              required
+            />
+          </div>
 
-            <div className={styles.field}>
-              <label htmlFor="email" className={styles.label}>Email address</label>
-              <div className={styles.inputWrap}>
-                <span className={styles.inputIcon}>✉</span>
-                <input
-                  id="email"
-                  className={styles.input}
-                  type="email"
-                  name="email"
-                  placeholder="you@example.com"
-                  value={formData.email}
-                  onChange={handleChange}
-                  autoComplete="email"
-                  required
-                />
-              </div>
-            </div>
+          <div className={styles.field}>
+            <label htmlFor="email" className={styles.label}>📧 Email address</label>
+            <input
+              id="email"
+              className={styles.input}
+              style={{ paddingLeft: '1rem' }}
+              type="email"
+              name="email"
+              placeholder="you@example.com"
+              value={formData.email}
+              onChange={handleChange}
+              autoComplete="email"
+              required
+            />
+          </div>
 
-            <div className={styles.field}>
-              <label htmlFor="password" className={styles.label}>Password</label>
-              <div className={styles.inputWrap}>
-                <span className={styles.inputIcon}>🔑</span>
-                <input
-                  id="password"
-                  className={styles.input}
-                  type="password"
-                  name="password"
-                  placeholder="Min. 6 characters"
-                  value={formData.password}
-                  onChange={handleChange}
-                  autoComplete="new-password"
-                  required
-                />
-              </div>
-              {formData.password && (
-                <div className={styles.strengthWrap} data-testid="strength-indicator">
-                  <div className={styles.strengthBar}>
-                    {[1,2,3,4,5].map((i) => (
-                      <div
-                        key={i}
-                        className={styles.strengthSegment}
-                        style={{ background: i <= strength ? strengthColor : 'var(--white-20)' }}
-                      />
-                    ))}
-                  </div>
-                  <span className={styles.strengthLabel} style={{ color: strengthColor }}>
-                    {strengthLabel}
-                  </span>
+          <div className={styles.field}>
+            <label htmlFor="password" className={styles.label}>🔑 Password</label>
+            <input
+              id="password"
+              className={styles.input}
+              style={{ paddingLeft: '1rem' }}
+              type="password"
+              name="password"
+              placeholder="At least 6 characters"
+              value={formData.password}
+              onChange={handleChange}
+              autoComplete="new-password"
+              required
+            />
+            {formData.password && (
+              <div className={styles.strengthWrap} data-testid="strength-indicator">
+                <div className={styles.strengthBar}>
+                  {[1,2,3,4,5].map((i) => (
+                    <div
+                      key={i}
+                      className={styles.strengthSegment}
+                      style={{ background: i <= strength ? strengthColor : '#e5e7eb' }}
+                    />
+                  ))}
                 </div>
-              )}
-            </div>
-
-            <div className={styles.field}>
-              <label htmlFor="confirm" className={styles.label}>Confirm password</label>
-              <div className={styles.inputWrap}>
-                <span className={styles.inputIcon}>🔒</span>
-                <input
-                  id="confirm"
-                  className={`${styles.input} ${
-                    formData.confirm && formData.confirm !== formData.password
-                      ? styles.inputError : ''
-                  }`}
-                  type="password"
-                  name="confirm"
-                  placeholder="Repeat your password"
-                  value={formData.confirm}
-                  onChange={handleChange}
-                  autoComplete="new-password"
-                  required
-                />
+                <span className={styles.strengthLabel} style={{ color: strengthColor }}>
+                  {strengthLabel}
+                </span>
               </div>
-              {formData.confirm && formData.confirm !== formData.password && (
-                <p className={styles.fieldError}>Passwords don't match</p>
-              )}
-            </div>
+            )}
+          </div>
 
-            <button type="submit" className={styles.submitBtn} disabled={loading}>
-              {loading ? <span className={styles.spinner} /> : 'Create Account'}
-            </button>
-          </form>
+          <div className={styles.field}>
+            <label htmlFor="confirm" className={styles.label}>🔒 Confirm password</label>
+            <input
+              id="confirm"
+              className={`${styles.input} ${
+                formData.confirm && formData.confirm !== formData.password
+                  ? styles.inputError : ''
+              }`}
+              style={{ paddingLeft: '1rem' }}
+              type="password"
+              name="confirm"
+              placeholder="Repeat your password"
+              value={formData.confirm}
+              onChange={handleChange}
+              autoComplete="new-password"
+              required
+            />
+            {formData.confirm && formData.confirm !== formData.password && (
+              <p className={styles.fieldError}>Passwords don't match</p>
+            )}
+          </div>
 
-          <p className={styles.switchText}>
-            Already have an account?{' '}
-            <Link to="/login" className={styles.switchLink}>Sign in</Link>
-          </p>
-        </div>
+          <button type="submit" className={styles.submitBtn} disabled={loading}>
+            {loading ? <span className={styles.spinner} /> : '🎉 Create Account'}
+          </button>
+        </form>
+
+        <p className={styles.switchText}>
+          Already have an account?{' '}
+          <Link to="/login" className={styles.switchLink}>Sign in here</Link>
+        </p>
       </div>
     </div>
   );

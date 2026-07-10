@@ -11,7 +11,6 @@ const LoginPage = () => {
   const [error,    setError]    = useState('');
   const [loading,  setLoading]  = useState(false);
 
-  // Already logged in → go straight to dashboard
   if (isLoggedIn) return <Navigate to="/dashboard" replace />;
 
   const handleChange = (e) =>
@@ -23,7 +22,7 @@ const LoginPage = () => {
     setLoading(true);
     try {
       const { data } = await loginUser(formData);
-      login(data);               // stores full user + token in context & localStorage
+      login(data);
       navigate('/dashboard', { replace: true });
     } catch (err) {
       setError(err.response?.data?.message || 'Login failed. Please try again.');
@@ -34,90 +33,68 @@ const LoginPage = () => {
 
   return (
     <div className={styles.page}>
-      {/* ── Left branding panel ── */}
-      <div className={styles.brand}>
-        <div className={styles.brandInner}>
-          <div className={styles.logo}>
-            <span className={styles.logoIcon}>📝</span>
-            <span className={styles.logoText}>MyNotes</span>
-          </div>
-          <h1 className={styles.tagline}>
-            Your thoughts,<br />organised beautifully.
-          </h1>
-          <p className={styles.sub}>
-            Capture ideas, create to‑do lists, and stay on top of everything
-            that matters — all in one secure place.
-          </p>
-          <div className={styles.features}>
-            {['🔒 End‑to‑end secure', '⚡ Instant sync', '🗂 Smart organisation'].map((f) => (
-              <span key={f} className={styles.featurePill}>{f}</span>
-            ))}
-          </div>
+      <div className={styles.card}>
+        {/* Logo */}
+        <div className={styles.logoWrap}>
+          <span className={styles.logoEmoji}>📓</span>
+          <span className={styles.logoText}>MyNotes</span>
         </div>
-      </div>
 
-      {/* ── Right form panel ── */}
-      <div className={styles.formPanel}>
-        <div className={styles.card}>
-          <h2 className={styles.cardTitle}>Welcome back</h2>
-          <p className={styles.cardSub}>Sign in to your account to continue</p>
+        <h2 className={styles.cardTitle}>Welcome back! 👋</h2>
+        <p className={styles.cardSub}>Sign in to see your notes</p>
 
-          {error && (
-            <div className={styles.errorBanner} role="alert">
-              <span className={styles.errorIcon}>⚠</span> {error}
+        {error && (
+          <div className={styles.errorBanner} role="alert">
+            <span className={styles.errorIcon}>⚠️</span> {error}
+          </div>
+        )}
+
+        <form onSubmit={handleSubmit} noValidate className={styles.form}>
+          <div className={styles.field}>
+            <label htmlFor="email" className={styles.label}>📧 Email address</label>
+            <div className={styles.inputWrap}>
+              <input
+                id="email"
+                className={styles.input}
+                style={{ paddingLeft: '1rem' }}
+                type="email"
+                name="email"
+                placeholder="you@example.com"
+                value={formData.email}
+                onChange={handleChange}
+                autoComplete="email"
+                required
+              />
             </div>
-          )}
+          </div>
 
-          <form onSubmit={handleSubmit} noValidate className={styles.form}>
-            <div className={styles.field}>
-              <label htmlFor="email" className={styles.label}>Email address</label>
-              <div className={styles.inputWrap}>
-                <span className={styles.inputIcon}>✉</span>
-                <input
-                  id="email"
-                  className={styles.input}
-                  type="email"
-                  name="email"
-                  placeholder="you@example.com"
-                  value={formData.email}
-                  onChange={handleChange}
-                  autoComplete="email"
-                  required
-                />
-              </div>
+          <div className={styles.field}>
+            <label htmlFor="password" className={styles.label}>🔑 Password</label>
+            <div className={styles.inputWrap}>
+              <input
+                id="password"
+                className={styles.input}
+                style={{ paddingLeft: '1rem' }}
+                type="password"
+                name="password"
+                placeholder="Your password"
+                value={formData.password}
+                onChange={handleChange}
+                autoComplete="current-password"
+                required
+              />
             </div>
+          </div>
 
-            <div className={styles.field}>
-              <div className={styles.labelRow}>
-                <label htmlFor="password" className={styles.label}>Password</label>
-                <a href="#" className={styles.forgotLink}>Forgot password?</a>
-              </div>
-              <div className={styles.inputWrap}>
-                <span className={styles.inputIcon}>🔑</span>
-                <input
-                  id="password"
-                  className={styles.input}
-                  type="password"
-                  name="password"
-                  placeholder="••••••••"
-                  value={formData.password}
-                  onChange={handleChange}
-                  autoComplete="current-password"
-                  required
-                />
-              </div>
-            </div>
+          <button type="submit" className={styles.submitBtn} disabled={loading}>
+            {loading ? <span className={styles.spinner} /> : '🚀 Sign In'}
+          </button>
+        </form>
 
-            <button type="submit" className={styles.submitBtn} disabled={loading}>
-              {loading ? <span className={styles.spinner} /> : 'Sign In'}
-            </button>
-          </form>
-
-          <p className={styles.switchText}>
-            Don't have an account?{' '}
-            <Link to="/register" className={styles.switchLink}>Create one free</Link>
-          </p>
-        </div>
+        <p className={styles.switchText}>
+          New here?{' '}
+          <Link to="/register" className={styles.switchLink}>Create a free account</Link>
+        </p>
       </div>
     </div>
   );
