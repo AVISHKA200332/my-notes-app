@@ -95,6 +95,11 @@ const LoginPage = () => {
           New here?{' '}
           <Link to="/register" className={styles.switchLink}>Create a free account</Link>
         </p>
+
+        <p className={styles.switchText} style={{ marginTop: '0.6rem' }}>
+          🛠️ Curious how this was built?{' '}
+          <Link to="/tutorial" className={styles.switchLink}>Read the tutorial</Link>
+        </p>
       </div>
     </div>
   );

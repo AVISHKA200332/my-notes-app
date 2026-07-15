@@ -1,0 +1,354 @@
+/* ═══════════════════════════════════════════════════
+   Tutorial Page  — friendly, readable, school-safe
+═══════════════════════════════════════════════════ */
+
+/* ── Page wrapper ── */
+.page {
+  min-height: 100vh;
+  background: linear-gradient(160deg, #ede9fe 0%, #dbeafe 45%, #d1fae5 100%);
+  padding-bottom: 4rem;
+  font-family: 'Segoe UI', system-ui, sans-serif;
+}
+
+/* ══════════════════════════════════════
+   HERO
+══════════════════════════════════════ */
+.hero {
+  text-align: center;
+  padding: 3rem 1.5rem 2rem;
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.heroLogo {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  font-size: 2rem;
+  margin-bottom: 1rem;
+}
+.heroLogoText {
+  font-size: 1.7rem;
+  font-weight: 900;
+  color: #7c3aed;
+}
+
+.heroTitle {
+  font-size: 2.3rem;
+  font-weight: 900;
+  color: #1e1b4b;
+  margin-bottom: 0.6rem;
+  letter-spacing: -0.02em;
+  line-height: 1.2;
+}
+
+.heroSub {
+  font-size: 1.1rem;
+  color: #4b5563;
+  margin-bottom: 1.5rem;
+  line-height: 1.6;
+}
+
+.heroBadges {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.5rem;
+}
+.heroBadge {
+  background: #fff;
+  border: 2px solid #e5e7eb;
+  color: #7c3aed;
+  font-size: 0.85rem;
+  font-weight: 700;
+  padding: 0.35rem 0.85rem;
+  border-radius: 999px;
+  box-shadow: 0 2px 8px rgba(124,58,237,0.1);
+}
+
+/* ══════════════════════════════════════
+   SUMMARY BOXES
+══════════════════════════════════════ */
+.summaryRow {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 1rem;
+  max-width: 820px;
+  margin: 0 auto 2.5rem;
+  padding: 0 1.5rem;
+}
+
+.summaryBox {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.25rem;
+  border-radius: 18px;
+  padding: 1.1rem 1.5rem;
+  min-width: 140px;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.07);
+}
+.summaryIcon  { font-size: 1.8rem; }
+.summaryLabel { font-size: 0.78rem; font-weight: 700; color: #6b7280; text-transform: uppercase; letter-spacing: 0.06em; }
+.summaryValue { font-size: 1rem; font-weight: 800; color: #1e1b4b; }
+
+/* ══════════════════════════════════════
+   MAIN CONTENT
+══════════════════════════════════════ */
+.main {
+  max-width: 820px;
+  margin: 0 auto;
+  padding: 0 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+/* ══════════════════════════════════════
+   SECTION (collapsible)
+══════════════════════════════════════ */
+.section {
+  background: #fff;
+  border-radius: 24px;
+  overflow: hidden;
+  box-shadow: 0 4px 24px rgba(124,58,237,0.1);
+  border: 2px solid #f3f4f6;
+}
+
+.sectionHeader {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 1.2rem 1.5rem;
+  background: var(--section-color, #ede9fe);
+  border: none;
+  cursor: pointer;
+  text-align: left;
+  transition: filter 0.15s ease;
+}
+.sectionHeader:hover { filter: brightness(0.96); }
+
+.sectionEmoji { font-size: 1.7rem; flex-shrink: 0; }
+.sectionTitle {
+  flex: 1;
+  font-size: 1.15rem;
+  font-weight: 800;
+  color: #1e1b4b;
+}
+.chevron {
+  font-size: 0.85rem;
+  color: #6b7280;
+  font-style: normal;
+}
+
+.sectionBody {
+  padding: 1.25rem 1.5rem 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.1rem;
+}
+
+/* ══════════════════════════════════════
+   STEP CARD
+══════════════════════════════════════ */
+.stepCard {
+  background: #f9fafb;
+  border-radius: 16px;
+  padding: 1.1rem 1.25rem;
+  border: 1.5px solid #f3f4f6;
+}
+
+.stepTop {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.9rem;
+}
+
+.stepIcon {
+  font-size: 1.7rem;
+  flex-shrink: 0;
+  line-height: 1;
+  margin-top: 0.1rem;
+}
+
+.stepRight { flex: 1; }
+
+.stepHeadRow {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  flex-wrap: wrap;
+  margin-bottom: 0.3rem;
+}
+
+.stepHeading {
+  font-size: 1rem;
+  font-weight: 800;
+  color: #1e1b4b;
+  margin: 0;
+}
+
+.tag {
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: #fff;
+  padding: 0.2rem 0.6rem;
+  border-radius: 999px;
+  letter-spacing: 0.04em;
+}
+
+.stepBody {
+  font-size: 0.97rem;
+  color: #374151;
+  line-height: 1.65;
+  margin: 0;
+}
+
+/* ── Code block wrapper (the dark box) ── */
+.codeWrap {
+  position: relative;
+  margin-top: 0.9rem;
+  background: #1e1b4b;
+  border-radius: 12px;
+  box-shadow: inset 0 2px 8px rgba(0,0,0,0.2);
+  overflow: hidden;
+}
+
+/* ── Top bar inside the dark box ── */
+.codeTopBar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.5rem 0.75rem 0.5rem 1rem;
+  background: rgba(255,255,255,0.05);
+  border-bottom: 1px solid rgba(196,181,253,0.15);
+}
+
+.codeLabel {
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: rgba(196,181,253,0.5);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  font-family: 'Fira Code', 'Cascadia Code', 'Courier New', monospace;
+}
+
+/* ── Copy button ── */
+.copyBtn {
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+  padding: 0.28rem 0.7rem;
+  background: rgba(255, 255, 255, 0.1);
+  color: #c4b5fd;
+  border: 1.5px solid rgba(196, 181, 253, 0.3);
+  border-radius: 7px;
+  font-size: 0.76rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 0.18s ease, color 0.18s ease, border-color 0.18s ease, transform 0.12s ease;
+  font-family: inherit;
+  line-height: 1;
+  white-space: nowrap;
+}
+.copyBtn:hover {
+  background: rgba(255, 255, 255, 0.2);
+  color: #ede9fe;
+  border-color: rgba(196, 181, 253, 0.6);
+  transform: translateY(-1px);
+}
+.copyBtn:active {
+  transform: translateY(0);
+}
+.copyBtnDone {
+  background: rgba(16, 185, 129, 0.2);
+  color: #6ee7b7;
+  border-color: rgba(16, 185, 129, 0.5);
+}
+.copyBtnDone:hover {
+  background: rgba(16, 185, 129, 0.28);
+  color: #6ee7b7;
+  border-color: rgba(16, 185, 129, 0.6);
+}
+
+/* ── Code block ── */
+.code {
+  background: transparent;
+  color: #c4b5fd;
+  border-radius: 0;
+  padding: 1rem 1.2rem;
+  font-size: 0.82rem;
+  line-height: 1.75;
+  overflow-x: auto;
+  font-family: 'Fira Code', 'Cascadia Code', 'Courier New', monospace;
+  white-space: pre;
+  margin: 0;
+}
+
+/* ══════════════════════════════════════
+   FOOTER
+══════════════════════════════════════ */
+.footer {
+  max-width: 820px;
+  margin: 2.5rem auto 0;
+  padding: 0 1.5rem;
+}
+
+.footerCard {
+  background: #fff;
+  border-radius: 24px;
+  padding: 2.5rem 2rem;
+  text-align: center;
+  box-shadow: 0 4px 24px rgba(124,58,237,0.12);
+  border: 2px solid #ede9fe;
+}
+
+.footerEmoji { font-size: 3rem; display: block; margin-bottom: 0.75rem; }
+
+.footerTitle {
+  font-size: 1.6rem;
+  font-weight: 900;
+  color: #1e1b4b;
+  margin-bottom: 0.6rem;
+}
+
+.footerText {
+  font-size: 1rem;
+  color: #6b7280;
+  line-height: 1.7;
+  margin-bottom: 1.5rem;
+}
+
+.footerBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.9rem 2.4rem;
+  background: linear-gradient(135deg, #7c3aed 0%, #3b82f6 100%);
+  color: #fff;
+  font-size: 1rem;
+  font-weight: 800;
+  border-radius: 14px;
+  text-decoration: none;
+  box-shadow: 0 4px 20px rgba(124,58,237,0.35);
+  transition: transform 0.15s ease, box-shadow 0.2s ease;
+}
+.footerBtn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 28px rgba(124,58,237,0.45);
+}
+
+/* ══════════════════════════════════════
+   RESPONSIVE
+══════════════════════════════════════ */
+@media (max-width: 600px) {
+  .heroTitle  { font-size: 1.65rem; }
+  .sectionTitle { font-size: 1rem; }
+  .stepIcon   { font-size: 1.4rem; }
+  .code       { font-size: 0.74rem; }
+  .summaryBox { min-width: 120px; padding: 0.9rem 1rem; }
+  .sectionBody { padding: 1rem 1rem 1.25rem; }
+}
