@@ -39,8 +39,8 @@ function CreditsPage() {
             This project was developed as a two-member collaboration, with each contributor taking ownership of a clear part of the app and supporting the learning journey for beginners.
           </p>
         </div>
-        <Link to="/dashboard" className="credit-page__back-btn">
-          Back to Dashboard
+        <Link to="/login" className="credit-page__back-btn">
+          Back to Login
         </Link>
       </div>
 

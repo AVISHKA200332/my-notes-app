@@ -430,7 +430,10 @@ const TutorialPage = () => (
           You now know how a real web app is built from scratch.<br />
           Go ahead — start writing your notes!
         </p>
-        <Link to="/login" className={styles.footerBtn}>🚀 Go to Sign In</Link>
+        <div className={styles.footerBtns}>
+          <Link to="/login" className={styles.footerBtn}>🚀 Go to Sign In</Link>
+          <Link to="/credits" className={styles.footerBtnSecondary}>👥 Meet the Team</Link>
+        </div>
       </div>
     </footer>
   </div>

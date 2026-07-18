@@ -341,6 +341,33 @@
   box-shadow: 0 8px 28px rgba(124,58,237,0.45);
 }
 
+.footerBtns {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 1rem;
+}
+
+.footerBtnSecondary {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.9rem 2.4rem;
+  background: transparent;
+  color: #7c3aed;
+  font-size: 1rem;
+  font-weight: 800;
+  border-radius: 14px;
+  text-decoration: none;
+  border: 2px solid #7c3aed;
+  transition: transform 0.15s ease, background 0.2s ease, color 0.2s ease;
+}
+.footerBtnSecondary:hover {
+  background: #7c3aed;
+  color: #fff;
+  transform: translateY(-2px);
+}
+
 /* ══════════════════════════════════════
    RESPONSIVE
 ══════════════════════════════════════ */
