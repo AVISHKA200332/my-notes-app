@@ -1,0 +1,235 @@
+/* ═══════════════════════════════════════════════════
+   credits.css — Standalone Credits Page Stylesheet
+   No framework dependencies. Works with credits.html
+═══════════════════════════════════════════════════ */
+
+/* ── Reset & Base ── */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: 'Inter', 'Segoe UI', system-ui, sans-serif;
+  background: linear-gradient(160deg, #ede9fe 0%, #dbeafe 50%, #d1fae5 100%);
+  min-height: 100vh;
+  color: #1e1b4b;
+  padding-bottom: 4rem;
+}
+
+/* ── Page Wrapper ── */
+.credit-page {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 2.5rem 1.5rem 4rem;
+}
+
+/* ═══════════════════════════════════════════════════
+   HEADER
+═══════════════════════════════════════════════════ */
+.credit-page__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 1.5rem;
+  background: linear-gradient(135deg, #7c3aed 0%, #3b82f6 100%);
+  border-radius: 28px;
+  padding: 2rem 2.2rem;
+  margin-bottom: 2.5rem;
+  box-shadow: 0 8px 32px rgba(124, 58, 237, 0.3);
+  color: #fff;
+  flex-wrap: wrap;
+}
+
+.credit-page__eyebrow {
+  font-size: 0.82rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  color: rgba(255, 255, 255, 0.75);
+  margin-bottom: 0.5rem;
+}
+
+.credit-page__title {
+  font-size: clamp(1.5rem, 3vw, 2.1rem);
+  font-weight: 900;
+  line-height: 1.2;
+  margin-bottom: 0.5rem;
+  color: #fff;
+}
+
+.credit-page__subtitle {
+  font-size: 0.97rem;
+  color: rgba(255, 255, 255, 0.82);
+  line-height: 1.65;
+  max-width: 560px;
+}
+
+/* ── Back Button ── */
+.credit-page__back-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.75rem 1.5rem;
+  background: rgba(255, 255, 255, 0.2);
+  border: 2px solid rgba(255, 255, 255, 0.4);
+  color: #fff;
+  font-size: 0.95rem;
+  font-weight: 700;
+  border-radius: 999px;
+  text-decoration: none;
+  white-space: nowrap;
+  flex-shrink: 0;
+  align-self: flex-start;
+  transition: background 0.18s ease, transform 0.12s ease;
+}
+.credit-page__back-btn:hover {
+  background: rgba(255, 255, 255, 0.32);
+  transform: translateY(-1px);
+}
+
+/* ═══════════════════════════════════════════════════
+   CARDS GRID
+═══════════════════════════════════════════════════ */
+.credit-page__grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+/* ── Credit Card ── */
+.credit-card {
+  background: #fff;
+  border-radius: 24px;
+  border: 2px solid #ede9fe;
+  box-shadow: 0 4px 24px rgba(124, 58, 237, 0.1);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  transition: transform 0.15s ease, box-shadow 0.2s ease;
+}
+.credit-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 10px 36px rgba(124, 58, 237, 0.18);
+}
+
+/* ── Card Top (tinted header) ── */
+.credit-card__top {
+  background: linear-gradient(135deg, #f5f3ff 0%, #ede9fe 100%);
+  padding: 1.6rem 1.8rem 1.4rem;
+  border-bottom: 1.5px solid #e9d5ff;
+}
+
+.credit-card__role {
+  font-size: 0.75rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: #7c3aed;
+  margin-bottom: 0.35rem;
+}
+
+.credit-card__name {
+  font-size: 1.2rem;
+  font-weight: 900;
+  color: #1e1b4b;
+  margin-bottom: 0.5rem;
+  line-height: 1.25;
+}
+
+.credit-card__highlight {
+  font-size: 0.92rem;
+  color: #4b5563;
+  line-height: 1.6;
+}
+
+/* ── Contributions List ── */
+.credit-card__list {
+  list-style: none;
+  padding: 1.4rem 1.8rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.65rem;
+  flex: 1;
+}
+
+.credit-card__list li {
+  font-size: 0.92rem;
+  color: #374151;
+  line-height: 1.6;
+  padding-left: 1.3rem;
+  position: relative;
+}
+.credit-card__list li::before {
+  content: '\2726';
+  position: absolute;
+  left: 0;
+  color: #7c3aed;
+  font-size: 0.65rem;
+  top: 0.3em;
+}
+
+/* ── LinkedIn Link Button ── */
+.credit-card__link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  margin: 0 1.8rem 1.6rem;
+  padding: 0.65rem 1.3rem;
+  background: linear-gradient(135deg, #7c3aed 0%, #3b82f6 100%);
+  color: #fff;
+  font-size: 0.88rem;
+  font-weight: 700;
+  border-radius: 12px;
+  text-decoration: none;
+  box-shadow: 0 4px 14px rgba(124, 58, 237, 0.3);
+  transition: transform 0.15s ease, box-shadow 0.2s ease;
+}
+.credit-card__link:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(124, 58, 237, 0.45);
+}
+
+/* ═══════════════════════════════════════════════════
+   LEARNING FOCUS NOTE
+═══════════════════════════════════════════════════ */
+.credit-page__note {
+  background: #fff;
+  border-radius: 20px;
+  border: 2px solid #ede9fe;
+  padding: 1.8rem 2rem;
+  box-shadow: 0 4px 18px rgba(124, 58, 237, 0.08);
+}
+
+.credit-page__note h3 {
+  font-size: 1rem;
+  font-weight: 800;
+  color: #7c3aed;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  margin-bottom: 0.6rem;
+}
+
+.credit-page__note p {
+  font-size: 0.97rem;
+  color: #4b5563;
+  line-height: 1.7;
+}
+
+/* ═══════════════════════════════════════════════════
+   RESPONSIVE
+═══════════════════════════════════════════════════ */
+@media (max-width: 600px) {
+  .credit-page {
+    padding: 1.5rem 1rem 3rem;
+  }
+  .credit-page__header {
+    flex-direction: column;
+    padding: 1.5rem 1.4rem;
+  }
+  .credit-page__grid {
+    grid-template-columns: 1fr;
+  }
+}

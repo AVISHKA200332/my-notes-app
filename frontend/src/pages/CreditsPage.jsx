@@ -72,6 +72,12 @@ function CreditsPage() {
           Each member also prepared beginner-friendly tutorials so that other students can understand how the app was built step by step, from authentication and dashboard creation to note editing and deletion.
         </p>
       </section>
+
+      <div className="credit-page__html-link">
+        <a href="/credits.html" target="_blank" rel="noreferrer" className="credit-page__html-btn">
+          📄 View HTML Version
+        </a>
+      </div>
     </div>
   );
 }

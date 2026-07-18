@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Credits — My Notes App</title>
+  <meta name="description" content="Meet the team behind My Notes — a two-member collaboration building a full-stack notes application." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap" rel="stylesheet" />
+
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Inter', 'Segoe UI', system-ui, sans-serif;
+      background: linear-gradient(160deg, #ede9fe 0%, #dbeafe 50%, #d1fae5 100%);
+      min-height: 100vh;
+      color: #1e1b4b;
+      padding-bottom: 4rem;
+    }
+
+    /* ── Page wrapper ── */
+    .credit-page {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 2.5rem 1.5rem 4rem;
+    }
+
+    /* ── Header ── */
+    .credit-page__header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 1.5rem;
+      background: linear-gradient(135deg, #7c3aed 0%, #3b82f6 100%);
+      border-radius: 28px;
+      padding: 2rem 2.2rem;
+      margin-bottom: 2.5rem;
+      box-shadow: 0 8px 32px rgba(124, 58, 237, 0.3);
+      color: #fff;
+      flex-wrap: wrap;
+    }
+
+    .eyebrow {
+      font-size: 0.82rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.15em;
+      color: rgba(255, 255, 255, 0.75);
+      margin-bottom: 0.5rem;
+    }
+
+    .credit-page__title {
+      font-size: clamp(1.5rem, 3vw, 2.1rem);
+      font-weight: 900;
+      line-height: 1.2;
+      margin-bottom: 0.5rem;
+      color: #fff;
+    }
+
+    .credit-page__subtitle {
+      font-size: 0.97rem;
+      color: rgba(255, 255, 255, 0.82);
+      line-height: 1.65;
+      max-width: 560px;
+    }
+
+    /* ── Back button ── */
+    .credit-page__back-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      padding: 0.75rem 1.5rem;
+      background: rgba(255, 255, 255, 0.2);
+      border: 2px solid rgba(255, 255, 255, 0.4);
+      color: #fff;
+      font-size: 0.95rem;
+      font-weight: 700;
+      border-radius: 999px;
+      text-decoration: none;
+      white-space: nowrap;
+      flex-shrink: 0;
+      align-self: flex-start;
+      transition: background 0.18s ease, transform 0.12s ease;
+    }
+    .credit-page__back-btn:hover {
+      background: rgba(255, 255, 255, 0.32);
+      transform: translateY(-1px);
+    }
+
+    /* ── Cards grid ── */
+    .credit-page__grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 1.5rem;
+      margin-bottom: 2rem;
+    }
+
+    /* ── Credit card ── */
+    .credit-card {
+      background: #fff;
+      border-radius: 24px;
+      border: 2px solid #ede9fe;
+      box-shadow: 0 4px 24px rgba(124, 58, 237, 0.1);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      transition: transform 0.15s ease, box-shadow 0.2s ease;
+    }
+    .credit-card:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 10px 36px rgba(124, 58, 237, 0.18);
+    }
+
+    .credit-card__top {
+      background: linear-gradient(135deg, #f5f3ff 0%, #ede9fe 100%);
+      padding: 1.6rem 1.8rem 1.4rem;
+      border-bottom: 1.5px solid #e9d5ff;
+    }
+
+    .credit-card__role {
+      font-size: 0.75rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      color: #7c3aed;
+      margin-bottom: 0.35rem;
+    }
+
+    .credit-card__name {
+      font-size: 1.2rem;
+      font-weight: 900;
+      color: #1e1b4b;
+      margin-bottom: 0.5rem;
+      line-height: 1.25;
+    }
+
+    .credit-card__highlight {
+      font-size: 0.92rem;
+      color: #4b5563;
+      line-height: 1.6;
+    }
+
+    /* ── Contributions list ── */
+    .credit-card__list {
+      list-style: none;
+      padding: 1.4rem 1.8rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.65rem;
+      flex: 1;
+    }
+
+    .credit-card__list li {
+      font-size: 0.92rem;
+      color: #374151;
+      line-height: 1.6;
+      padding-left: 1.3rem;
+      position: relative;
+    }
+    .credit-card__list li::before {
+      content: '\2726';
+      position: absolute;
+      left: 0;
+      color: #7c3aed;
+      font-size: 0.65rem;
+      top: 0.3em;
+    }
+
+    /* ── LinkedIn link ── */
+    .credit-card__link {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      margin: 0 1.8rem 1.6rem;
+      padding: 0.65rem 1.3rem;
+      background: linear-gradient(135deg, #7c3aed 0%, #3b82f6 100%);
+      color: #fff;
+      font-size: 0.88rem;
+      font-weight: 700;
+      border-radius: 12px;
+      text-decoration: none;
+      box-shadow: 0 4px 14px rgba(124, 58, 237, 0.3);
+      transition: transform 0.15s ease, box-shadow 0.2s ease;
+    }
+    .credit-card__link:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(124, 58, 237, 0.45);
+    }
+
+    /* ── Footer note section ── */
+    .credit-page__note {
+      background: #fff;
+      border-radius: 20px;
+      border: 2px solid #ede9fe;
+      padding: 1.8rem 2rem;
+      box-shadow: 0 4px 18px rgba(124, 58, 237, 0.08);
+    }
+
+    .credit-page__note h3 {
+      font-size: 1rem;
+      font-weight: 800;
+      color: #7c3aed;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      margin-bottom: 0.6rem;
+    }
+
+    .credit-page__note p {
+      font-size: 0.97rem;
+      color: #4b5563;
+      line-height: 1.7;
+    }
+
+    /* ── Responsive ── */
+    @media (max-width: 600px) {
+      .credit-page { padding: 1.5rem 1rem 3rem; }
+      .credit-page__header { flex-direction: column; padding: 1.5rem 1.4rem; }
+      .credit-page__grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="credit-page">
+
+    <!-- Header -->
+    <div class="credit-page__header">
+      <div>
+        <p class="eyebrow">Project Credits</p>
+        <h1 class="credit-page__title">Meet the team behind My Notes</h1>
+        <p class="credit-page__subtitle">
+          This project was developed as a two-member collaboration, with each contributor taking
+          ownership of a clear part of the app and supporting the learning journey for beginners.
+        </p>
+      </div>
+      <a href="/login" class="credit-page__back-btn">&#8592; Back to Login</a>
+    </div>
+
+    <!-- Contributors grid -->
+    <div class="credit-page__grid">
+
+      <!-- Card 1 -->
+      <article class="credit-card">
+        <div class="credit-card__top">
+          <p class="credit-card__role">Contributor</p>
+          <h2 class="credit-card__name">Avishka Dinushan Jayakodi</h2>
+          <p class="credit-card__highlight">Built the secure authentication flow and the note editor experience.</p>
+        </div>
+        <ul class="credit-card__list">
+          <li>Created the signup and login UI with form handling and validation.</li>
+          <li>Implemented the backend auth flow for signup/login with password hashing and JWT generation.</li>
+          <li>Developed the note editing and deletion experience, including update/delete API integration.</li>
+          <li>Prepared beginner-friendly tutorials for authentication, editing, and delete actions.</li>
+        </ul>
+        <a
+          class="credit-card__link"
+          href="https://www.linkedin.com/in/avishka-dinushan-jayakodi1118"
+          target="_blank"
+          rel="noreferrer"
+        >
+          &#128279; View LinkedIn Profile
+        </a>
+      </article>
+
+      <!-- Card 2 -->
+      <article class="credit-card">
+        <div class="credit-card__top">
+          <p class="credit-card__role">Contributor</p>
+          <h2 class="credit-card__name">Kaveesha Kavindi Jagoda</h2>
+          <p class="credit-card__highlight">Built the main dashboard experience for creating and viewing notes.</p>
+        </div>
+        <ul class="credit-card__list">
+          <li>Designed the protected dashboard layout and navigation flow.</li>
+          <li>Built the create note form and note listing experience for logged-in users.</li>
+          <li>Connected the project to the notes API for fetching and displaying user notes.</li>
+          <li>Created simple tutorial guidance for beginners to understand dashboard and note creation.</li>
+        </ul>
+        <a
+          class="credit-card__link"
+          href="https://www.linkedin.com/in/kaveesha-jagoda-50a090380?utm_source=share_via&amp;utm_content=profile&amp;utm_medium=member_android"
+          target="_blank"
+          rel="noreferrer"
+        >
+          &#128279; View LinkedIn Profile
+        </a>
+      </article>
+
+    </div>
+
+    <!-- Learning focus note -->
+    <section class="credit-page__note">
+      <h3>Learning Focus</h3>
+      <p>
+        Each member also prepared beginner-friendly tutorials so that other students can understand
+        how the app was built step by step, from authentication and dashboard creation to note editing and deletion.
+      </p>
+    </section>
+
+  </div>
+
+</body>
+</html>
