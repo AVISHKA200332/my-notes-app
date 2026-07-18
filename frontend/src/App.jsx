@@ -1,22 +1,25 @@
 import { Routes, Route, Navigate } from 'react-router-dom';
-import { AuthProvider }  from './context/AuthContext';
-import PrivateRoute      from './components/PrivateRoute';
-import LoginPage         from './pages/LoginPage';
-import RegisterPage      from './pages/RegisterPage';
-import Dashboard         from './pages/Dashboard';
-import TutorialPage      from './pages/TutorialPage';
+import { AuthProvider } from './context/AuthContext';
+import PrivateRoute from './components/PrivateRoute';
+
+import LoginPage from './pages/LoginPage';
+import RegisterPage from './pages/RegisterPage';
+import Dashboard from './pages/Dashboard';
+import TutorialPage from './pages/TutorialPage';
+import CreditsPage from './pages/CreditsPage';
 
 function App() {
   return (
     <AuthProvider>
       <Routes>
-        {/* Public routes */}
-        <Route path="/"          element={<Navigate to="/login" replace />} />
-        <Route path="/login"     element={<LoginPage />} />
-        <Route path="/register"  element={<RegisterPage />} />
-        <Route path="/tutorial"  element={<TutorialPage />} />
+        {/* Public Routes */}
+        <Route path="/" element={<Navigate to="/login" replace />} />
+        <Route path="/login" element={<LoginPage />} />
+        <Route path="/register" element={<RegisterPage />} />
+        <Route path="/tutorial" element={<TutorialPage />} />
+        <Route path="/credits" element={<CreditsPage />} />
 
-        {/* Protected routes — must be logged in */}
+        {/* Protected Routes */}
         <Route element={<PrivateRoute />}>
           <Route path="/dashboard" element={<Dashboard />} />
         </Route>

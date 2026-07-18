@@ -1,9 +1,13 @@
+import { Link } from 'react-router-dom';
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { useAuth }            from '../context/AuthContext';
-import CreateNote             from '../components/CreateNote';
-import NoteList               from '../components/NoteList';
-import EditNoteModal          from '../components/EditNoteModal';
-import DeleteConfirmModal     from '../components/DeleteConfirmModal';
+
+import { useAuth } from '../context/AuthContext';
+
+import CreateNote from '../components/CreateNote';
+import NoteList from '../components/NoteList';
+import EditNoteModal from '../components/EditNoteModal';
+import DeleteConfirmModal from '../components/DeleteConfirmModal';
+
 import '../styles/dashboard.css';
 
 const CATEGORIES = ['All', 'General', 'Personal', 'School', 'Campus', 'Work'];
@@ -123,7 +127,10 @@ function Dashboard() {
             Capture ideas, tasks and moments in one place.
           </p>
         </div>
-        <button className="dashboard__logout" onClick={logout}>Logout</button>
+        <div className="dashboard__header-actions">
+          <Link to="/credits" className="dashboard__credits-link">Credits</Link>
+          <button className="dashboard__logout" onClick={logout}>Logout</button>
+        </div>
       </div>
 
       {/* ── Stats ── */}
